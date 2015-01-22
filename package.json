@@ -2,9 +2,9 @@
   "name": "dq8",
   "version": "0.1.0",
   "description": "Dragon Quest VIII Project",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "gulp": "^3.8.10",
