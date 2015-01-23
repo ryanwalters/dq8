@@ -74,7 +74,7 @@ Server.route({
  *      - todo: create data structure
  *
  * /ability/{ability_id}
- *      - ability_id: sword, spear, fisticuffs, boomerang, courage, bow, staff, charisma, knives, whip, sex appeal, axe, club, scythe, humanity, magic
+ *      - ability_id: 1sword, 2spear, 3fisticuffs, 4boomerang, 5courage, 14bow, 10staff, 15charisma, 11knives, 12whip, 13sex appeal, 6axe, 7club, 8scythe, 9humanity, 16magic
  *      - ability_type
  *      - ability_name
  *      - points[character_id][int]
