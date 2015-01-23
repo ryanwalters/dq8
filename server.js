@@ -41,13 +41,15 @@ Server.route({
  *
  * /character/{character_id}
  *      - character_id
+ *      - character_name
+ *      - character_image
  *      - ability_id[]
  *
  * /item/{item_id}
  *      - item_id
- *      - item_type[]: body, head, shield, accessory, weapon, ingredient, cheese
  *      - item_name
- *      - image
+ *      - item_type[]: body, head, shield, accessory, weapon, ingredient, cheese
+ *      - item_image
  *      - equip[]: hero, yangus, jessica, angelo
  *      - item_info
  *      - defence
@@ -61,6 +63,7 @@ Server.route({
  *
  * /recipe/{recipe_id}
  *      - recipe_id
+ *      - recipe_name
  *      - item_id
  *      - recipe[]
  *
@@ -84,16 +87,43 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/1/{list_type}',
+    path: '/1/{listType}/{id?}',
     handler: function (request, reply) {
-        // do postgres stuff
-    }
-});
+        var query,
+            listType = request.params.listType,
+            id = request.params.id;
 
-Server.route({
-    method: 'GET',
-    path: '/1/{list_type}/{id}',
-    handler: function (request, reply) {
-        // do postgres stuff
+        switch (listType) {
+            case 'ability':
+                break;
+            case 'character':
+                break;
+            case 'enemy':
+                break;
+            case 'item':
+                query = 'SELECT item_id, item_name, item_type, item_image, equip, item_info, defence, bonus, buy, sell, recipe, area, drop, effect FROM item';
+                break;
+            case 'recipe':
+                break;
+            case 'spell':
+                break;
+            default:
+                return reply(400, 'Bad Request');
+        }
+
+        if (id) query += ' WHERE ' + listType + '_id = ' + id;
+        query += ' ORDER BY ' + listType + '_name';
+
+        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
+            client.query(query, function (error, results) {
+                done();
+                if (error) {
+                    console.error(error);
+                    return reply(404, 'Not Found');
+                } else {
+                    return reply(results.rows);
+                }
+            });
+        });
     }
 });
