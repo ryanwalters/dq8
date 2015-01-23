@@ -97,6 +97,7 @@ Server.route({
             case 'ability':
                 break;
             case 'character':
+                query = 'SELECT character_id, character_name, character_image, ability_id FROM character';
                 break;
             case 'enemy':
                 break;
