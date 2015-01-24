@@ -1,6 +1,7 @@
 'use strict';
 
-var Hapi = require('hapi'),
+var Boom = require('boom'),
+    Hapi = require('hapi'),
     PG = require('pg'),
     Server = new Hapi.Server();
 
@@ -87,32 +88,39 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/1/{listType}/{id?}',
+    path: '/1/{listType}/{ids?}',
     handler: function (request, reply) {
         var query,
             listType = request.params.listType,
-            id = request.params.id;
+            ids = request.params.ids;
 
         switch (listType) {
             case 'ability':
                 break;
+
             case 'character':
-                query = 'SELECT character_id, character_name, character_image, ability_id FROM character';
+                query = 'SELECT character_id, character_name, character_image, ability_id FROM character WHERE character_id';
+                if (ids) query += ' IN (' + ids + ')';
                 break;
+
             case 'enemy':
                 break;
+
             case 'item':
                 query = 'SELECT item_id, item_name, item_type, item_image, equip, item_info, defence, bonus, buy, sell, recipe, area, drop, effect FROM item';
+                if (ids) query += ' WHERE item_id = ' + ids;
                 break;
+
             case 'recipe':
                 break;
+
             case 'spell':
                 break;
+
             default:
-                return reply(400, 'Bad Request');
+                return reply(Boom.badRequest());
         }
 
-        if (id) query += ' WHERE ' + listType + '_id = ' + id;
         query += ' ORDER BY ' + listType + '_name';
 
         PG.connect(process.env.DATABASE_URL, function (error, client, done) {
@@ -120,7 +128,7 @@ Server.route({
                 done();
                 if (error) {
                     console.error(error);
-                    return reply(404, 'Not Found');
+                    return reply(Boom.notFound());
                 } else {
                     return reply(results.rows);
                 }
