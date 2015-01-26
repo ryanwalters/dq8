@@ -74,15 +74,25 @@ Server.route({
  * /spell/{spell_id}
  *      - todo: create data structure
  *
- * /ability/{ability_id}
- *      - ability_id: 1sword, 2spear, 3fisticuffs, 4boomerang, 5courage, 14bow, 10staff, 15charisma, 11knives, 12whip, 13sex appeal, 6axe, 7club, 8scythe, 9humanity, 16magic
- *      - ability_type
- *      - ability_name
- *      - points[character_id][int]
+ *
+ * /character/ability/{ability_id}
+ *      - character_ability_id
+ *      - character_id
+ *      - ability_id
+ *      - points
  *      - level
  *      - target
  *      - tension
  *      - ability_info
+ *
+ * table: ability
+ *      - ability_id
+ *      - ability_name
+ *      - ability_type_id
+ *
+ * table: ability_type
+ *      - ability_type_id
+ *      - ability_type_name
  *
  */
 
@@ -99,8 +109,8 @@ Server.route({
                 break;
 
             case 'character':
-                query = 'SELECT character_id, character_name, character_image, ability_id FROM character WHERE character_id';
-                if (ids) query += ' IN (' + ids + ')';
+                query = 'SELECT character_id, character_name, character_image, ability_id FROM character';
+                if (ids) query += ' WHERE character_id IN (' + ids + ')';
                 break;
 
             case 'enemy':
@@ -136,3 +146,23 @@ Server.route({
         });
     }
 });
+
+Server.route({
+    method: 'GET',
+    path: '/1/character/ability/{characterId}',
+    handler: function (request, reply) {
+        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
+            var query = 'SELECT character_ability.*, ability.*, ability_type.* FROM character_ability JOIN ability USING (ability_id) JOIN ability_type USING (ability_type_id) WHERE character_id IN (' + request.params.characterId + ') ORDER BY character_ability.character_id ASC, ability.ability_type_id ASC, character_ability.points ASC';
+
+            client.query(query, function (error, results) {
+                done();
+                if (error) {
+                    console.error(error);
+                    return reply(Boom.notFound());
+                } else {
+                    return reply(results.rows);
+                }
+            })
+        })
+    }
+})
