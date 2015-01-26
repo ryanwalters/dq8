@@ -165,4 +165,36 @@ Server.route({
             })
         })
     }
-})
+});
+
+Server.route({
+    method: 'GET',
+    path: '/1/character/{heroName}',
+    handler: function (request, reply) {
+        var query = 'SELECT character.character_id, \
+                        character.character_name, \
+                        character.character_image, \
+                        json_agg(character_ability.*) AS abilities \
+                    FROM character \
+                    JOIN character_ability USING (character_id) \
+                    JOIN ability USING (ability_id) \
+                    WHERE character_id = ' + request.params.heroName + ' \
+                    GROUP BY \
+                        character.character_id, \
+                        character.character_name, \
+                        character.character_image';
+
+        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
+            client.query(query, function (error, results) {
+                done();
+                if (error) {
+                    console.error(error);
+                    return reply(Boom.notFound());
+                } else {
+                    return reply(results.rows);
+                }
+            });
+        });
+    }
+});
+
