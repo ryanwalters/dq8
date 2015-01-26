@@ -152,7 +152,7 @@ Server.route({
     path: '/1/character/ability/{characterId}',
     handler: function (request, reply) {
         PG.connect(process.env.DATABASE_URL, function (error, client, done) {
-            var query = 'SELECT character_ability.*, ability.*, ability_type.* FROM character_ability JOIN ability USING (ability_id) JOIN ability_type USING (ability_type_id) WHERE character_id IN (' + request.params.characterId + ') ORDER BY character_ability.character_id ASC, ability.ability_type_id ASC, character_ability.points ASC';
+            var query = 'SELECT ability_type.*, character_ability.*, ability.* FROM ability_type JOIN ability USING (ability_type_id) JOIN character_ability USING (ability_id) WHERE character_id IN (' + request.params.characterId + ') ORDER BY character_ability.character_id ASC, ability.ability_type_id ASC, character_ability.points ASC';
 
             client.query(query, function (error, results) {
                 done();
