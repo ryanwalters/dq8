@@ -133,17 +133,7 @@ Server.route({
 
         query += ' ORDER BY ' + listType + '_name';
 
-        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
-            client.query(query, function (error, results) {
-                done();
-                if (error) {
-                    console.error(error);
-                    return reply(Boom.notFound());
-                } else {
-                    return reply(results.rows);
-                }
-            });
-        });
+        _query(query, reply);
     }
 });
 
@@ -151,19 +141,20 @@ Server.route({
     method: 'GET',
     path: '/1/character/ability/{characterId}',
     handler: function (request, reply) {
-        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
-            var query = 'SELECT ability_type.*, character_ability.*, ability.* FROM ability_type JOIN ability USING (ability_type_id) JOIN character_ability USING (ability_id) WHERE character_id IN (' + request.params.characterId + ') ORDER BY character_ability.character_id ASC, ability.ability_type_id ASC, character_ability.points ASC';
+        var query = 'SELECT \
+                        ability_type.*, \
+                        character_ability.*, \
+                        ability.* \
+                    FROM ability_type \
+                    JOIN ability USING (ability_type_id) \
+                    JOIN character_ability USING (ability_id) \
+                    WHERE character_id IN (' + request.params.characterId + ') \
+                    ORDER BY \
+                        character_ability.character_id ASC, \
+                        ability.ability_type_id ASC, \
+                        character_ability.points ASC';
 
-            client.query(query, function (error, results) {
-                done();
-                if (error) {
-                    console.error(error);
-                    return reply(Boom.notFound());
-                } else {
-                    return reply(results.rows);
-                }
-            })
-        })
+        _query(query, reply);
     }
 });
 
@@ -174,27 +165,27 @@ Server.route({
         var query = 'SELECT character.character_id, \
                         character.character_name, \
                         character.character_image, \
-                        json_agg(character_ability.*) AS abilities \
+                        json_agg(character_ability_type.*) AS ability_types \
                     FROM character \
-                    JOIN character_ability USING (character_id) \
-                    JOIN ability USING (ability_id) \
+                    JOIN character_ability_type USING (character_id) \
                     WHERE character_id = ' + request.params.heroName + ' \
                     GROUP BY \
-                        character.character_id, \
-                        character.character_name, \
-                        character.character_image';
+                        character.character_id';
 
-        PG.connect(process.env.DATABASE_URL, function (error, client, done) {
-            client.query(query, function (error, results) {
-                done();
-                if (error) {
-                    console.error(error);
-                    return reply(Boom.notFound());
-                } else {
-                    return reply(results.rows);
-                }
-            });
-        });
+        _query(query, reply);
     }
 });
 
+var _query = function (query, reply) {
+    PG.connect(process.env.DATABASE_URL, function (error, client, done) {
+        client.query(query, function (error, results) {
+            done();
+            if (error) {
+                console.error(error);
+                return reply(Boom.notFound());
+            } else {
+                return reply(results.rows);
+            }
+        });
+    });
+};
