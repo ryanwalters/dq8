@@ -44,7 +44,6 @@ Server.route({
  *      - character_id
  *      - character_name
  *      - character_image
- *      - ability_id[]
  *
  * /item/{item_id}
  *      - item_id
@@ -75,7 +74,9 @@ Server.route({
  *      - todo: create data structure
  *
  *
- * /character/ability/{ability_id}
+ * /character/{characterId}
+ *
+ *  table: character_ability
  *      - character_ability_id
  *      - character_id
  *      - ability_id
@@ -84,6 +85,11 @@ Server.route({
  *      - target
  *      - tension
  *      - ability_info
+ *
+ * table: character_ability_type
+ *      - character_ability_type_id
+ *      - character_id
+ *      - ability_type_id
  *
  * table: ability
  *      - ability_id
@@ -98,7 +104,7 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/1/{listType}/{ids?}',
+    path: '/v1/{listType}/{ids?}',
     handler: function (request, reply) {
         var query,
             listType = request.params.listType,
@@ -137,61 +143,49 @@ Server.route({
     }
 });
 
+
 Server.route({
     method: 'GET',
-    path: '/1/character/ability/{characterId}',
+    path: '/v1/character/{characterId?}',
     handler: function (request, reply) {
-        var query = 'SELECT \
+        var query = request.params.characterId ?
+
+                // If characterId is present, select that character and all of their ability data
+
+                'SELECT \
+                    character.character_id, \
+                    character.character_name, \
+                    character.character_image, \
+                    json_agg(ability_type_row) AS ability_types \
+                FROM character \
+                JOIN character_ability_type USING (character_id) \
+                JOIN ( \
+                    SELECT \
                         ability_type.*, \
-                        character_ability.*, \
-                        ability.* \
+                        json_agg(ability_row) AS abilities \
                     FROM ability_type \
-                    JOIN ability USING (ability_type_id) \
-                    JOIN character_ability USING (ability_id) \
-                    WHERE character_id IN (' + request.params.characterId + ') \
-                    ORDER BY \
-                        character_ability.character_id ASC, \
-                        ability.ability_type_id ASC, \
-                        character_ability.points ASC';
-
-        _query(query, reply);
-    }
-});
-
-Server.route({
-    method: 'GET',
-    path: '/1/character/{characterId}',
-    handler: function (request, reply) {
-        var query = 'SELECT \
-                        character.character_id, \
-                        character.character_name, \
-                        character.character_image, \
-                        json_agg(ability_type_row) AS ability_types \
-                    FROM character \
-                    JOIN character_ability_type USING (character_id) \
                     JOIN ( \
                         SELECT \
-                            ability_type.*, \
-                            json_agg(ability_row) AS abilities \
-                        FROM ability_type \
-                        JOIN ( \
-                            SELECT \
-                                ability.*, \
-                                character_ability.* \
-                            FROM ability \
-                            JOIN character_ability USING (ability_id) \
-                            WHERE character_ability.character_id = ' + request.params.characterId + '\
-                            ORDER BY \
-                                character_ability.points DESC \
-                        ) ability_row ON (ability_row.ability_type_id = ability_type.ability_type_id) \
-                        GROUP BY \
-                            ability_type.ability_type_id \
+                            ability.*, \
+                            character_ability.* \
+                        FROM ability \
+                        JOIN character_ability USING (ability_id) \
+                        WHERE character_ability.character_id = ' + request.params.characterId + '\
                         ORDER BY \
-                            ability_type.ability_type_id ASC \
-                    ) ability_type_row ON (ability_type_row.ability_type_id = character_ability_type.ability_type_id) \
-                    WHERE character_id = ' + request.params.characterId + ' \
+                            character_ability.points DESC \
+                    ) ability_row ON (ability_row.ability_type_id = ability_type.ability_type_id) \
                     GROUP BY \
-                        character.character_id';
+                        ability_type.ability_type_id \
+                    ORDER BY \
+                        ability_type.ability_type_id ASC \
+                ) ability_type_row ON (ability_type_row.ability_type_id = character_ability_type.ability_type_id) \
+                WHERE character_id = ' + request.params.characterId + ' \
+                GROUP BY \
+                    character.character_id' :
+
+                // Otherwise, get list of available characters
+
+                'SELECT character.* FROM character ORDER BY character_id';
 
         _query(query, reply);
     }
