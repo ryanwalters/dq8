@@ -166,14 +166,24 @@ Server.route({
                         c.character_id, \
                         c.character_name, \
                         c.character_image, \
-                        json_agg(ability_row) AS ability_types \
+                        json_agg(ability_type_row) AS ability_types \
                     FROM character c \
                     JOIN character_ability_type USING (character_id) \
                     JOIN ( \
                         SELECT \
-                            ability_type.* \
+                            ability_type.*, \
+                            json_agg(ability_row) AS abilities \
                         FROM ability_type \
-                    ) ability_row ON (ability_row.ability_type_id = character_ability_type.ability_type_id) \
+                        JOIN ( \
+                            SELECT \
+                                ability.* \
+                            FROM ability \
+                        ) ability_row ON (ability_row.ability_type_id = ability_type.ability_type_id) \
+                        GROUP BY \
+                            ability_type.ability_type_id \
+                        ORDER BY \
+                            ability_type.ability_type_id ASC \
+                    ) ability_type_row ON (ability_type_row.ability_type_id = character_ability_type.ability_type_id) \
                     WHERE character_id = ' + request.params.heroName + ' \
                     GROUP BY \
                         c.character_id';
