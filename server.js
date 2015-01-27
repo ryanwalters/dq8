@@ -160,14 +160,14 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/1/character/{heroName}',
+    path: '/1/character/{characterId}',
     handler: function (request, reply) {
         var query = 'SELECT \
-                        c.character_id, \
-                        c.character_name, \
-                        c.character_image, \
+                        character.character_id, \
+                        character.character_name, \
+                        character.character_image, \
                         json_agg(ability_type_row) AS ability_types \
-                    FROM character c \
+                    FROM character \
                     JOIN character_ability_type USING (character_id) \
                     JOIN ( \
                         SELECT \
@@ -176,53 +176,26 @@ Server.route({
                         FROM ability_type \
                         JOIN ( \
                             SELECT \
-                                ability.* \
+                                ability.*, \
+                                character_ability.* \
                             FROM ability \
+                            JOIN character_ability USING (ability_id) \
+                            WHERE character_ability.character_id = ' + request.params.characterId + '\
+                            ORDER BY \
+                                character_ability.points DESC \
                         ) ability_row ON (ability_row.ability_type_id = ability_type.ability_type_id) \
                         GROUP BY \
                             ability_type.ability_type_id \
                         ORDER BY \
                             ability_type.ability_type_id ASC \
                     ) ability_type_row ON (ability_type_row.ability_type_id = character_ability_type.ability_type_id) \
-                    WHERE character_id = ' + request.params.heroName + ' \
+                    WHERE character_id = ' + request.params.characterId + ' \
                     GROUP BY \
-                        c.character_id';
-
-        var sample = 'SELECT \
-                        d.id, \
-                        d.name, \
-                        json_agg(c_row) AS components \
-                    FROM devices d \
-                    INNER JOIN device_components dc ON (dc.deviceid = d.id) \
-                    INNER JOIN ( \
-                        SELECT \
-                            c.id, \
-                            c.name, \
-                            json_agg(m) AS manufacturers \
-                        FROM components c \
-                        INNER JOIN component_manufacturers cm ON (cm.componentid = c.id) \
-                        INNER JOIN manufacturers m ON (cm.manufacturerid = m.id) \
-                        GROUP BY c.id \
-                    ) c_row ON (c_row.id = dc.componentid) \
-                    GROUP BY d.id';
+                        character.character_id';
 
         _query(query, reply);
     }
 });
-
-/*
-
-
- JOIN ( \
- SELECT \
- ability_type.ability_type_id, \
- ability_type.ability_name, \
- json_agg(character_ability.*) AS abilities \
- FROM ability_type \
- JOIN character_ability USING (ability_id) \
- GROUP BY ability_type.ability_type_id \
- ) ability_types USING (ability_type_id) \
- */
 
 var _query = function (query, reply) {
     PG.connect(process.env.DATABASE_URL, function (error, client, done) {
