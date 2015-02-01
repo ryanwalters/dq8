@@ -1,7 +1,9 @@
 'use strict';
 
 var Boom = require('boom'),
+    Handlebars = require('handlebars'),
     Hapi = require('hapi'),
+    Path = require('path'),
     PG = require('pg'),
     Server = new Hapi.Server();
 
@@ -9,6 +11,13 @@ Server.connection({ port: process.env.PORT || 5000});
 
 Server.start(function () {
     console.log('Server running at: ', Server.info.uri);
+});
+
+Server.views({
+    engines: {
+        html: Handlebars
+    },
+    path: Path.join(__dirname, 'app')
 });
 
 Server.route({
@@ -21,9 +30,11 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/app.js',
-    handler: function (request, reply) {
-        return reply.file('app.js');
+    path: '/dist/{param*}',
+    handler: {
+        directory: {
+            path: 'dist'
+        }
     }
 });
 
@@ -104,48 +115,6 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/v1/{listType}/{ids?}',
-    handler: function (request, reply) {
-        var query,
-            listType = request.params.listType,
-            ids = request.params.ids;
-
-        switch (listType) {
-            case 'ability':
-                break;
-
-            case 'character':
-                query = 'SELECT character_id, character_name, character_image, ability_id FROM character';
-                if (ids) query += ' WHERE character_id IN (' + ids + ')';
-                break;
-
-            case 'enemy':
-                break;
-
-            case 'item':
-                query = 'SELECT item_id, item_name, item_type, item_image, equip, item_info, defence, bonus, buy, sell, recipe, area, drop, effect FROM item';
-                if (ids) query += ' WHERE item_id = ' + ids;
-                break;
-
-            case 'recipe':
-                break;
-
-            case 'spell':
-                break;
-
-            default:
-                return reply(Boom.badRequest());
-        }
-
-        query += ' ORDER BY ' + listType + '_name';
-
-        _query(query, reply);
-    }
-});
-
-
-Server.route({
-    method: 'GET',
     path: '/v1/character/{characterId?}',
     handler: function (request, reply) {
         var query = request.params.characterId ?
@@ -153,9 +122,7 @@ Server.route({
                 // If characterId is present, select that character and all of their ability data
 
                 'SELECT \
-                    character.character_id, \
-                    character.character_name, \
-                    character.character_image, \
+                    character.*, \
                     json_agg(ability_type_row) AS ability_types \
                 FROM character \
                 JOIN character_ability_type USING (character_id) \
