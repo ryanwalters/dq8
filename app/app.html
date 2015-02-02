@@ -1,3 +1,7 @@
-{{ testing }}
 
-<div ui-view></div>
+<div ng-include="'/app/navigation/header.html'"></div>
+<div ui-view>
+    <h1>Welcome!</h1>
+    <p>This is a random project for Dragon Quest VIII stuff.</p>
+</div>
+<div ng-include="'/app/navigation/footer.html'"></div>

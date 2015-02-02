@@ -1,1 +1,7 @@
-{{ characters }}
+<h3>{{ character.character_name }}</h3>
+
+<h4>Abilities</h4>
+<hr />
+<ul>
+    <li ng-repeat="ability in character.ability_types">{{ ability.ability_type }}</li>
+</ul>

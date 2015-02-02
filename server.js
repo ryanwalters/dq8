@@ -115,9 +115,28 @@ Server.route({
 
 Server.route({
     method: 'GET',
-    path: '/v1/character/{characterId?}',
+    path: '/v1/character/{characterName?}',
     handler: function (request, reply) {
-        var query = request.params.characterId ?
+        var query,
+            characterId,
+            characterName = request.params.characterName;
+
+        switch (characterName) {
+            case 'hero':
+                characterId = 1;
+                break;
+            case 'yangus':
+                characterId = 2;
+                break;
+            case 'jessica':
+                characterId = 3;
+                break;
+            case 'angelo':
+                characterId = 4;
+                break;
+        }
+
+        query = characterName ?
 
                 // If characterId is present, select that character and all of their ability data
 
@@ -137,7 +156,7 @@ Server.route({
                             character_ability.* \
                         FROM ability \
                         JOIN character_ability USING (ability_id) \
-                        WHERE character_ability.character_id = ' + request.params.characterId + '\
+                        WHERE character_ability.character_id = ' + characterId + '\
                         ORDER BY \
                             character_ability.points DESC \
                     ) ability_row ON (ability_row.ability_type_id = ability_type.ability_type_id) \
@@ -146,7 +165,7 @@ Server.route({
                     ORDER BY \
                         ability_type.ability_type_id ASC \
                 ) ability_type_row ON (ability_type_row.ability_type_id = character_ability_type.ability_type_id) \
-                WHERE character_id = ' + request.params.characterId + ' \
+                WHERE character_id = ' + characterId + ' \
                 GROUP BY \
                     character.character_id' :
 

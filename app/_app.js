@@ -13,8 +13,16 @@ angular.module('Dragon', [
         $locationProvider.html5Mode(true);
 
         $stateProvider
-            .state('home', {
+            .state('dragon', {
                 controller: 'DragonCtrl',
+                resolve: {
+                    _characters: ['CharacterFactory', function (CharacterFactory) {
+                        return CharacterFactory.getCharacters()
+                            .then(function () {
+                                return CharacterFactory.characters;
+                            });
+                    }]
+                },
                 templateUrl: '/app/app.html',
                 url: '/'
             });
