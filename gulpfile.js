@@ -4,6 +4,7 @@ var argv = require('minimist')(process.argv.slice(2)),
     gulp = require('gulp'),
     concat = require('gulp-concat'),
     gulpif = require('gulp-if'),
+    imagemin = require('gulp-imagemin'),
     uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps');
@@ -28,7 +29,14 @@ gulp.task('css', function () {
         .pipe(gulp.dest(DIST_DIR));
 });
 
-gulp.task('watch', ['js', 'css'], function () {
+gulp.task('images', function () {
+    gulp.src(BUILD_DIR + 'media/images/*')
+        .pipe(imagemin())
+        .pipe(gulp.dest(DIST_DIR + 'media/images'));
+});
+
+gulp.task('watch', ['js', 'css', 'images'], function () {
     gulp.watch('app/**/*.js', ['js']);
-    gulp.watch(BUILD_DIR + 'scss/*.scss', ['css'])
+    gulp.watch(BUILD_DIR + 'scss/*.scss', ['css']);
+    gulp.watch(BUILD_DIR + 'media/images/*', ['images'])
 });
