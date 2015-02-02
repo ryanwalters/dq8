@@ -7,7 +7,6 @@ angular.module('Dragon', [
 
     // Modules
     'Dragon.character'
-
 ])
     .config(['$stateProvider', '$locationProvider', function ($stateProvider, $locationProvider) {
 
