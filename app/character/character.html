@@ -2,6 +2,43 @@
 
 <h4>Abilities</h4>
 <hr />
-<ul>
-    <li ng-repeat="ability in character.ability_types">{{ ability.ability_type }}</li>
-</ul>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary" ng-repeat="abilityType in character.ability_types">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ abilityType.ability_type }}</h3>
+            </div>
+            <div class="panel-body">
+                <a ng-href="#{{ abilityType.ability_type | lowercase }}-ability" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="{{ abilityType.ability_type | lowercase }}-ability">Click to expand...</a>
+                <div id="{{ abilityType.ability_type | lowercase }}-ability" class="list-group collapse">
+                    <div class="list-group-item" ng-repeat="ability in abilityType.abilities">
+                        <h5 class="list-group-item-heading">{{ ability.ability_name }}</h5>
+                        <p class="list-group-item-text">{{ ability.ability_info }}</p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th ng-if="ability.level !== null">Level</th>
+                                <th ng-if="ability.mp !== null">MP</th>
+                                <th ng-if="ability.points !== null">Points</th>
+                                <th ng-if="ability.target !== null">Target</th>
+                                <th ng-if="ability.tension !== null">Tension</th>
+                                <th ng-if="ability.oomph !== null">Oomph</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td ng-if="ability.level !== null">{{ ability.level }}</td>
+                                <td ng-if="ability.mp !== null">{{ ability.mp }}</td>
+                                <td ng-if="ability.points !== null">{{ ability.points }}</td>
+                                <td ng-if="ability.target !== null">{{ ability.target }}</td>
+                                <td ng-if="ability.tension !== null">{{ ability.tension }}</td>
+                                <td ng-if="ability.oomph !== null">{{ ability.oomph }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
