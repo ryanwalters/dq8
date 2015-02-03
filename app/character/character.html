@@ -9,30 +9,20 @@
                 <h3 class="panel-title">{{ abilityType.ability_type }}</h3>
             </div>
             <div class="panel-body">
-                <a ng-href="#{{ abilityType.ability_type | lowercase }}-ability" data-toggle="collapse" data-parent="#accordion" aria-expanded="false" aria-controls="{{ abilityType.ability_type | lowercase }}-ability">Click to expand...</a>
+                <a ng-href="#{{ abilityType.ability_type | lowercase }}-ability" data-toggle="collapse" aria-expanded="false" aria-controls="{{ abilityType.ability_type | lowercase }}-ability">Click to expand...</a>
                 <div id="{{ abilityType.ability_type | lowercase }}-ability" class="list-group collapse">
-                    <div class="list-group-item" ng-repeat="ability in abilityType.abilities">
+                    <div class="list-group-item" ng-repeat="ability in abilityType.abilities | orderBy : ['level', 'points']">
                         <h5 class="list-group-item-heading">{{ ability.ability_name }}</h5>
                         <p class="list-group-item-text">{{ ability.ability_info }}</p>
-                        <table class="table">
+                        <table class="table ability-table">
                             <thead>
                             <tr>
-                                <th ng-if="ability.level !== null">Level</th>
-                                <th ng-if="ability.mp !== null">MP</th>
-                                <th ng-if="ability.points !== null">Points</th>
-                                <th ng-if="ability.target !== null">Target</th>
-                                <th ng-if="ability.tension !== null">Tension</th>
-                                <th ng-if="ability.oomph !== null">Oomph</th>
+                                <th ng-repeat="(key, value) in ability" ng-if="$index >= 6 && value !== null">{{ key }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td ng-if="ability.level !== null">{{ ability.level }}</td>
-                                <td ng-if="ability.mp !== null">{{ ability.mp }}</td>
-                                <td ng-if="ability.points !== null">{{ ability.points }}</td>
-                                <td ng-if="ability.target !== null">{{ ability.target }}</td>
-                                <td ng-if="ability.tension !== null">{{ ability.tension }}</td>
-                                <td ng-if="ability.oomph !== null">{{ ability.oomph }}</td>
+                                <td ng-repeat="(key, value) in ability" ng-if="$index >= 6 && value !== null">{{ value }}</td>
                             </tr>
                             </tbody>
                         </table>
