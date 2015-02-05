@@ -1,15 +1,7 @@
 'use strict';
 
-/**
- * Hooks to implement:
- * - pre-commit: gulp lint
- * - pre-push: gulp images
- */
-
-var argv = require('minimist')(process.argv.slice(2)),
-    gulp = require('gulp'),
+var gulp = require('gulp'),
     concat = require('gulp-concat'),
-    gulpif = require('gulp-if'),
     imagemin = require('gulp-imagemin'),
     jshint = require('gulp-jshint'),
     sass = require('gulp-sass'),
@@ -19,8 +11,7 @@ var argv = require('minimist')(process.argv.slice(2)),
 
 var APP_DIR = './app',
     BUILD_DIR = './build',
-    DIST_DIR = './dist',
-    IS_RELEASE_BUILD = !!argv.release;
+    DIST_DIR = './dist';
 
 gulp.task('js', function () {
     gulp.src([APP_DIR + '/**/_*.js', APP_DIR + '/**/*.js'])
@@ -57,6 +48,12 @@ gulp.task('watch', ['js', 'css', 'images'], function () {
 });
 
 gulp.task('hooks', function () {
-    return gulp.src(BUILD_DIR + '/hooks/pre-commit')
-        .pipe(symlink('.git/hooks/pre-commit'));
+    return gulp.src([
+            BUILD_DIR + '/hooks/pre-commit',
+            BUILD_DIR + '/hooks/pre-push'
+        ])
+        .pipe(symlink([
+            '.git/hooks/pre-commit',
+            '.git/hooks/pre-push'
+        ], { force: true }));
 });
