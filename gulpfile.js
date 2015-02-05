@@ -50,12 +50,9 @@ gulp.task('watch', ['js', 'css', 'images'], function () {
 });
 
 gulp.task('hooks', function () {
+    console.log(IS_RELEASE);
     return IS_RELEASE ?
         null :
-        gulp.src([
-            BUILD_DIR + '/hooks/pre-commit'
-        ])
-        .pipe(symlink([
-            '.git/hooks/pre-commit'
-        ], { force: true }));
+        gulp.src([BUILD_DIR + '/hooks/pre-commit'])
+            .pipe(symlink(['.git/hooks/pre-commit'], { force: true }));
 });

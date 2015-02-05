@@ -1,27 +1,18 @@
-# Heroku "NAHP" Stack Boilerplate
+# Sample Heroku node.js application
 
 Basic "Hello world!" application for (free on) the Heroku platform. This guide assumes you have the CLI tools installed
 to work with Heroku, namely the [Heroku Toolbelt](https://toolbelt.heroku.com/), [node](http://nodejs.org/download/),
 and [git](http://git-scm.com/downloads).
 
-This app will combine your Angular app into a single, minified file along with a source map to allow for debugging.
+## Neat things this sample app does
 
-## Inside your "napsack"
+- Automatically installs git hooks (i.e. to lint your code before committing)
+- Watches source files for changes and automatically preps them for production
+    - Bundles and minifies your Angular app into a single file, which includes a source map for easy debugging
+    - Compiles your .scss files into a single .css file
+- Angular-specific: "caches" API calls to prevent unnecessary database calls and speed up the page
 
-- Node.js
-- Angular
-- Hapi
-- Postgres
-
-## Setup
-
-1. `git clone https://github.com/ryanwalters/heroku-boilerplate.git <appname>`
-2. `cd <appname>`
-3. `heroku create <appname>`
-4. `heroku addons:add heroku-postgresql`
-5. `git push heroku master`
-
-## Run locally
+## To run locally
 
 1. Get the environment variable from the following command `heroku config:get DATABASE_URL` and place it in `.env`
 2. `npm install`

@@ -1,23 +1,14 @@
 'use strict';
 
 var Boom = require('boom'),
-    Handlebars = require('handlebars'),
     Hapi = require('hapi'),
-    Path = require('path'),
     PG = require('pg'),
     Server = new Hapi.Server();
 
-Server.connection({ port: process.env.PORT || 5000});
+Server.connection({ port: process.env.PORT || 5000 });
 
 Server.start(function () {
     console.log('Server running at: ', Server.info.uri);
-});
-
-Server.views({
-    engines: {
-        html: Handlebars
-    },
-    path: Path.join(__dirname, 'app')
 });
 
 Server.route({
@@ -51,11 +42,6 @@ Server.route({
 /**
  * api paths and data structures
  *
- * /character/{character_id}
- *      - character_id
- *      - character_name
- *      - character_image
- *
  * /item/{item_id}
  *      - item_id
  *      - item_name
@@ -83,33 +69,6 @@ Server.route({
  *
  * /spell/{spell_id}
  *      - todo: create data structure
- *
- *
- * /character/{characterId}
- *
- *  table: character_ability
- *      - character_ability_id
- *      - character_id
- *      - ability_id
- *      - points
- *      - level
- *      - target
- *      - tension
- *      - ability_info
- *
- * table: character_ability_type
- *      - character_ability_type_id
- *      - character_id
- *      - ability_type_id
- *
- * table: ability
- *      - ability_id
- *      - ability_name
- *      - ability_type_id
- *
- * table: ability_type
- *      - ability_type_id
- *      - ability_type_name
  *
  */
 
