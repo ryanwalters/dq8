@@ -11,11 +11,11 @@ and [git](http://git-scm.com/downloads).
     - Bundles and minifies your Angular app into a single file, which includes a source map for easy debugging
     - Compiles your .scss files into a single .css file
 - Heroku-specific: Ignores source files and only deploys production-ready files
-- Angular-specific: "caches" API calls to prevent unnecessary database calls and speed up the page
+- Angular-specific: "caches" API calls to prevent unnecessary database calls
 
 ## To run locally
 
-1. Get the environment variable from the following command `heroku config:get DATABASE_URL` and place it in `.env`
+1. Copy the environment variable from the following command `heroku config:get DATABASE_URL | clip` and place it in `.env`
 2. `npm install`
 2. `gulp watch`
 3. `foreman start web`
