@@ -10,6 +10,7 @@ and [git](http://git-scm.com/downloads).
 - Watches source files for changes and automatically preps them for production
     - Bundles and minifies your Angular app into a single file, which includes a source map for easy debugging
     - Compiles your .scss files into a single .css file
+- Heroku-specific: Ignores source files and only deploys production-ready files
 - Angular-specific: "caches" API calls to prevent unnecessary database calls and speed up the page
 
 ## To run locally
