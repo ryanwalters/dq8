@@ -3,7 +3,6 @@
 var argv = require('minimist')(process.argv.slice(2)),
     gulp = require('gulp'),
     concat = require('gulp-concat'),
-    gulpif = require('gulp-if'),
     imagemin = require('gulp-imagemin'),
     jshint = require('gulp-jshint'),
     sass = require('gulp-sass'),
