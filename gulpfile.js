@@ -1,7 +1,9 @@
 'use strict';
 
-var gulp = require('gulp'),
+var argv = require('minimist')(process.argv.slice(2)),
+    gulp = require('gulp'),
     concat = require('gulp-concat'),
+    gulpif = require('gulp-if'),
     imagemin = require('gulp-imagemin'),
     jshint = require('gulp-jshint'),
     sass = require('gulp-sass'),
@@ -11,7 +13,8 @@ var gulp = require('gulp'),
 
 var APP_DIR = './app',
     BUILD_DIR = './build',
-    DIST_DIR = './dist';
+    DIST_DIR = './dist',
+    IS_RELEASE = !!argv.release;
 
 gulp.task('js', function () {
     gulp.src([APP_DIR + '/**/_*.js', APP_DIR + '/**/*.js'])
@@ -48,12 +51,12 @@ gulp.task('watch', ['js', 'css', 'images'], function () {
 });
 
 gulp.task('hooks', function () {
-    return gulp.src([
-            BUILD_DIR + '/hooks/pre-commit',
-            BUILD_DIR + '/hooks/pre-push'
+    return IS_RELEASE ?
+        null :
+        gulp.src([
+            BUILD_DIR + '/hooks/pre-commit'
         ])
         .pipe(symlink([
-            '.git/hooks/pre-commit',
-            '.git/hooks/pre-push'
+            '.git/hooks/pre-commit'
         ], { force: true }));
 });
