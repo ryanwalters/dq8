@@ -27,5 +27,5 @@ angular.module('Dragon.character')
                             self.characters = charactersData;
                         });
             }
-        }
+        };
     }]);
