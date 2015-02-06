@@ -24,3 +24,7 @@ and [git](http://git-scm.com/downloads).
 ## Guidelines
 
 - Angular module setters must begin with an underscore (_app.js)
+
+## See it in action
+
+https://dq8.herokuapp.com
