@@ -1,6 +1,6 @@
 # Sample Heroku node.js application
 
-Basic "Hello world!" application for (free on) the Heroku platform. This guide assumes you have the CLI tools installed
+Sample application for (running free on) the Heroku platform. This guide assumes you have the CLI tools installed
 to work with Heroku, namely the [Heroku Toolbelt](https://toolbelt.heroku.com/), [node](http://nodejs.org/download/),
 and [git](http://git-scm.com/downloads).
 
@@ -15,7 +15,8 @@ and [git](http://git-scm.com/downloads).
 
 ## To run locally
 
-1. Copy the environment variable from the following command `heroku config:get DATABASE_URL | clip` and place it in `.env`
+1. `heroku git:clone -a dq8`
+1. Set the environment variable obtained from `heroku config:get DATABASE_URL` and place it in `.env`
 2. `npm install`
 2. `gulp watch`
 3. `foreman start web`
