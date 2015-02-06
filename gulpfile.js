@@ -44,7 +44,7 @@ gulp.task('images', function () {
         .pipe(gulp.dest(DIST_DIR + '/media/images'));
 });
 
-gulp.task('watch', ['js', 'css', 'images'], function () {
+gulp.task('watch', ['js', 'css'], function () {
     gulp.watch(APP_DIR + '/**/*.js', ['js']);
     gulp.watch(BUILD_DIR + '/scss/*.scss', ['css']);
 });
