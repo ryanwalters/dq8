@@ -6,6 +6,6 @@ then
 fi
 
 PACKAGE=`./node_modules/.bin/gulp bump`
-echo $PACKAGE
+echo $PACKAGE\n
 
 exit $?
