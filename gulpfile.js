@@ -2,6 +2,7 @@
 
 var argv = require('minimist')(process.argv.slice(2)),
     bump = require('gulp-bump'),
+    exec = require('child_process').exec,
     gulp = require('gulp'),
     concat = require('gulp-concat'),
     imagemin = require('gulp-imagemin'),
@@ -62,5 +63,5 @@ gulp.task('bump', function () {
     gulp.src(packageJson)
         .pipe(bump())
         .pipe(gulp.dest('./'));
-    process.stdout.write(packageJson);
+    exec('git add ' + packageJson);
 });
