@@ -1,6 +1,7 @@
 'use strict';
 
 var argv = require('minimist')(process.argv.slice(2)),
+    bump = require('gulp-bump'),
     gulp = require('gulp'),
     concat = require('gulp-concat'),
     imagemin = require('gulp-imagemin'),
@@ -50,9 +51,14 @@ gulp.task('watch', ['js', 'css'], function () {
 });
 
 gulp.task('hooks', function () {
-    console.log(IS_RELEASE);
     return IS_RELEASE ?
         null :
         gulp.src([BUILD_DIR + '/hooks/pre-commit'])
             .pipe(symlink(['.git/hooks/pre-commit'], { force: true }));
+});
+
+gulp.task('bump', function () {
+    gulp.src('./package.json')
+        .pipe(bump())
+        .pipe(gulp.dest('./'));
 });

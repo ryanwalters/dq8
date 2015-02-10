@@ -5,4 +5,6 @@ then
   ./node_modules/.bin/gulp lint
 fi
 
+./node_modules/.bin/gulp bump
+
 exit $?
