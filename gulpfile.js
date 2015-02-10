@@ -58,7 +58,9 @@ gulp.task('hooks', function () {
 });
 
 gulp.task('bump', function () {
-    gulp.src('./package.json')
+    var packageJson = './package.json';
+    gulp.src(packageJson)
         .pipe(bump())
         .pipe(gulp.dest('./'));
+    process.stdout.write(packageJson);
 });

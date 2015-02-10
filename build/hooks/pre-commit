@@ -5,6 +5,7 @@ then
   ./node_modules/.bin/gulp lint
 fi
 
-./node_modules/.bin/gulp bump
+PACKAGE=./node_modules/.bin/gulp bump
+git add $PACKAGE
 
 exit $?

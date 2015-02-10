@@ -1,6 +1,6 @@
 {
   "name": "dq8",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dragon Quest VIII Project",
   "main": "server.js",
   "scripts": {
