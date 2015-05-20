@@ -1,21 +1,16 @@
 'use strict';
 
-var argv = require('minimist')(process.argv.slice(2)),
-    bump = require('gulp-bump'),
-    exec = require('child_process').exec,
-    gulp = require('gulp'),
+var gulp = require('gulp'),
     concat = require('gulp-concat'),
     imagemin = require('gulp-imagemin'),
     jshint = require('gulp-jshint'),
     sass = require('gulp-sass'),
-    symlink = require('gulp-symlink'),
     sourcemaps = require('gulp-sourcemaps'),
     uglify = require('gulp-uglify');
 
 var APP_DIR = './app',
     BUILD_DIR = './build',
-    DIST_DIR = './dist',
-    IS_RELEASE = !!argv.release;
+    DIST_DIR = './dist';
 
 gulp.task('js', function () {
     gulp.src([APP_DIR + '/**/_*.js', APP_DIR + '/**/*.js'])
@@ -49,19 +44,4 @@ gulp.task('images', function () {
 gulp.task('watch', ['js', 'css'], function () {
     gulp.watch(APP_DIR + '/**/*.js', ['js']);
     gulp.watch(BUILD_DIR + '/scss/*.scss', ['css']);
-});
-
-gulp.task('hooks', function () {
-    return IS_RELEASE ?
-        null :
-        gulp.src([BUILD_DIR + '/hooks/pre-commit'])
-            .pipe(symlink(['.git/hooks/pre-commit'], { force: true }));
-});
-
-gulp.task('bump', function () {
-    var packageJson = './package.json';
-    gulp.src(packageJson)
-        .pipe(bump())
-        .pipe(gulp.dest('./'));
-    exec('git add ' + packageJson);
 });

@@ -4,8 +4,7 @@
   "description": "Dragon Quest VIII Project",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js --release=true",
-    "postinstall": "gulp hooks"
+    "start": "node server.js"
   },
   "dependencies": {
     "boom": "^2.6.1",
